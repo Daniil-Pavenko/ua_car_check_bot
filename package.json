@@ -1,0 +1,32 @@
+{
+  "name": "ua_car_check_bot",
+  "version": "1.0.0",
+  "description": "bot for check car info by car identifier",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daniil-Pavenko/ua_car_check_bot.git"
+  },
+  "keywords": [
+    "car",
+    "ua",
+    "checker",
+    "info",
+    "opendata"
+  ],
+  "author": "Dan Pavenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daniil-Pavenko/ua_car_check_bot/issues"
+  },
+  "homepage": "https://github.com/Daniil-Pavenko/ua_car_check_bot#readme",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "dotenv": "^16.0.0",
+    "telegraf": "^4.7.0"
+  }
+}
