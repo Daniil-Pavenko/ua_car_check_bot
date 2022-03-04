@@ -27,27 +27,7 @@ bot.on('text', async (ctx) => {
 
 	if (isCorrectNumber) {
 		ctx.reply('Почекайте хвилинку, шукаємо інформацію')
-		axios.get(`https://opendatabot.com/api/v3/public/transport?number=${utf8.encode(numberOfCar.toUpperCase())}`)
-			.then(function (response) {
-				let car = response.data
-				if (car == undefined || car == null) {
-					ctx.replyWithHTML(`Автомобіль за номером <b>${numberOfCar}</b> не знайдений. Обережно!!!`)
-					return
-				}
-				let info = `<u>Знайдено за номером ${numberOfCar}</u>\n<b>Модель:</b> ${car.model}\n<b>Рік:</b> ${car.year}\n<b>Дата реєстрації:</b> ${car.date}\n<b>Колір:</b> ${car.color}\n<b>Тип:</b> ${car.body}\n<b>Реєстрація:</b> ${car.dep}`
-				ctx.replyWithHTML(info)
-		  	})
-		  	.catch(function (error) {
-				console.log(error);
-				if (error.response.status == 404) {
-					ctx.replyWithHTML(`Автомобіль за номером <b>${numberOfCar}</b> не знайдений. Обережно!!!`)
-				} else {
-					ctx.reply('Не корректний формат номеру авто, англійськими буквами. Приклад: AA1111KK')
-				}
-		  	})
-		  	.then(function () {
-				// always executed
-		  	});
+		checkCarPlate(ctx, numberOfCar)
 	} else {
 		ctx.reply('Не корректний формат номеру авто, англійськими буквами. Приклад: AA1111KK')
 	}
@@ -70,6 +50,7 @@ bot.on('photo', async (ctx) => {
 		}
     }).then(function (response) {
 		let carPlate = response.data
+		checkCarPlate(ctx, carPlate)
 		console.log(`Car: ${carPlate}`)
 	  })
 	  .catch(function (error) {
@@ -80,6 +61,30 @@ bot.on('photo', async (ctx) => {
 	  });
 	//https://carplatereader.azurewebsites.net/LicensePlate
 })
+
+function checkCarPlate(ctx, carPlate) {
+	axios.get(`https://opendatabot.com/api/v3/public/transport?number=${utf8.encode(carPlate.toUpperCase())}`)
+			.then(function (response) {
+				let car = response.data
+				if (car == undefined || car == null) {
+					ctx.replyWithHTML(`Автомобіль за номером <b>${carPlate}</b> не знайдений. Обережно!!!`)
+					return
+				}
+				let info = `<u>Знайдено за номером ${carPlate}</u>\n<b>Модель:</b> ${car.model}\n<b>Рік:</b> ${car.year}\n<b>Дата реєстрації:</b> ${car.date}\n<b>Колір:</b> ${car.color}\n<b>Тип:</b> ${car.body}\n<b>Реєстрація:</b> ${car.dep}`
+				ctx.replyWithHTML(info)
+		  	})
+		  	.catch(function (error) {
+				console.log(error);
+				if (error.response.status == 404) {
+					ctx.replyWithHTML(`Автомобіль за номером <b>${carPlate}</b> не знайдений. Обережно!!!`)
+				} else {
+					ctx.reply('Не корректний формат номеру авто, англійськими буквами. Приклад: AA1111KK')
+				}
+		  	})
+		  	.then(function () {
+				// always executed
+		  	});
+}
 
 console.log('Bot is started');
 bot.launch();
