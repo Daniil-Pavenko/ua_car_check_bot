@@ -2,7 +2,7 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import utf8 from 'utf8';
-
+import FormData from 'form-data';
 
 dotenv.config();
 
@@ -51,6 +51,34 @@ bot.on('text', async (ctx) => {
 	} else {
 		ctx.reply('Не корректний формат номеру авто, англійськими буквами. Приклад: AA1111KK')
 	}
+})
+bot.on('photo', async (ctx) => {
+	console.log('Receive photo')
+	let fileId = ctx.message.photo[ctx.message.photo.length - 1].file_id
+	let fileData = await bot.telegram.getFile(fileId)
+	let file = await axios.get(`https://api.telegram.org/file/bot${TOKEN}/${fileData.file_path}`)
+	let form = new FormData();
+	form.append("picture", file.data, {
+		contentType: 'image/*',
+		filename: 'picture_cached.jpg'
+	})
+	form.append("type", "image/*")
+
+	axios.post('https://carplatereader.azurewebsites.net/LicensePlate', form, {	
+		headers: {
+			'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}`,
+		}
+    }).then(function (response) {
+		let carPlate = response.data
+		console.log(`Car: ${carPlate}`)
+	  })
+	  .catch(function (error) {
+		console.log(error.response);
+	  })
+	  .then(function () {
+		// always executed
+	  });
+	//https://carplatereader.azurewebsites.net/LicensePlate
 })
 
 console.log('Bot is started');
