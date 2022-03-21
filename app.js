@@ -36,7 +36,8 @@ bot.on('photo', async (ctx) => {
 	console.log('Receive photo')
 	let fileId = ctx.message.photo[ctx.message.photo.length - 1].file_id
 	let fileData = await bot.telegram.getFile(fileId)
-	let file = await axios.get(`https://api.telegram.org/file/bot${TOKEN}/${fileData.file_path}`)
+	let imageUrl = `https://api.telegram.org/file/bot${TOKEN}/${fileData.file_path}`
+	let file = await axios.get(imageUrl)
 	let form = new FormData();
 	form.append("picture", file.data, {
 		contentType: 'image/*',
